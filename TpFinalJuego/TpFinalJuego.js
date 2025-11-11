@@ -1,132 +1,114 @@
-///alumanas luz moral y matilda guida
+
 let jugador;
 let disparos = [];
 let enemigos = [];
-let imagenFondo;
+let imagenesMorty = [];
+let fondo;
 
-let spritesMorty =[
-"assets/morty/m1.png",
-"assets/morty/m2.png",
-"assets/morty/m3.png",
-"assets/morty/m4.png",
-"assets/morty/m5.png",
-"assets/morty/m6.png",
-"assets/morty/m7.png",
-"assets/morty/m8.png"
-];
+let puntos = 0;
+let vidas = 3;
 
-let imagenesMorty = []; 
-let frameActual = 0; 
-let desplazamientoFondo = 0;  
-let velocidadFondo = 2;  
-
-let juegoActivo = true;
-let inicioEnemigos = false;
-let mostrarMensaje = false;
-
-let limiteAvance = 500; // hasta dónde puede avanzar el jugador
-let tiempoMensaje = 0; 
+let desplazamientoFondo = 0;
+let velocidadFondo = 2;
+let fondoMaximo = 1200; 
 
 function preload() {
-  imagenFondo = loadImage("assets/fondoJuego.jpeg");
-   
-   for (let i = 0; i < spritesMorty.length; i++) {
-    imagenesMorty.push(loadImage(spritesMorty[i]));
+  for (let i = 0; i < 8; i++) {
+    imagenesMorty.push(loadImage("assets/morty/m" + (i + 1) + ".png"));
   }
-
+  fondo = loadImage("assets/fondoJuego.jpg");
 }
+
 
 function setup() {
   createCanvas(640, 480);
   jugador = new Jugador();
 }
 
+
 function draw() {
   background(0);
-  mostrarFondo();
 
-if (keyIsDown(LEFT_ARROW)) {
-  jugador.mover(-1);
-}
+  // --- Fondo desplazable ---
+  let anchoImg = fondo.width;
+  let x = -(desplazamientoFondo % anchoImg);
+  image(fondo, x, 0, anchoImg, height);
+  image(fondo, x + anchoImg, 0, anchoImg, height);
 
-if (keyIsDown(RIGHT_ARROW)) {
-  if (juegoActivo) {
-    if (jugador.x < width / 2) {
-      jugador.mover(1); // 🔹 se mueve y anima
-    } else {
-      // 🔹 se queda quieto pero sigue animando mientras el fondo se mueve
-      desplazamientoFondo += velocidadFondo;
-      jugador.mover(0, true); // <- "true" fuerza la animación sin moverse
-
-      if (desplazamientoFondo >= limiteAvance) {
-        juegoActivo = false;
-        mostrarMensaje = true;
-        tiempoMensaje = millis();
-      }
+  // --- Movimiento del jugador y fondo ---
+  if (keyIsDown(LEFT_ARROW)) {
+    if (jugador.x > 50) {
+      jugador.mover(-1);
+    } else if (desplazamientoFondo > 0) {
+      desplazamientoFondo -= velocidadFondo;
     }
-  } else {
-    jugador.mover(1);
   }
-}
-  // --- Mostrar mensaje antes de la batalla ---
-  if (mostrarMensaje) {
-    fill(255);
-    textSize(32);
-    textAlign(CENTER);
-    text("¡Prepárate para la batalla!", width / 2, height / 2);
+  if (keyIsDown(RIGHT_ARROW)) {
+    if (jugador.x < width / 2) {
+      jugador.mover(1);
+    } else if (desplazamientoFondo < fondoMaximo) {
+      desplazamientoFondo += velocidadFondo;
+    }
   }
 
-  // --- Pasados 3 segundos, aparecen los enemigos ---
-  if (mostrarMensaje && millis() - tiempoMensaje > 3000) {
-    mostrarMensaje = false;
-    inicioEnemigos = true;
-  }
+  jugador.actualizar();
+  jugador.dibujar();
 
-  
-  // --- Generar enemigos desde los costados ---
-  if (inicioEnemigos && random(1) < 0.02) {
-    enemigos.push(new Enemigo());
-  }
-  
-  // --- Mostrar jugador ---
-  jugador.mostrar();
+  // --- Disparos ---
+  for (let i = disparos.length - 1; i >= 0; i--) {
+    disparos[i].dibujar();
+    disparos[i].actualizar();
 
-  // --- Actualizar disparos ---
-  for (let d of disparos) {
-    d.actualizar();
-    d.mostrar();
-  }
-
-  // --- Actualizar enemigos ---
-  for (let e of enemigos) {
-    e.actualizar();
-    e.mostrar();
-  }
-
-  // --- Detectar colisiones ---
-  for (let i = enemigos.length - 1; i >= 0; i--) {
-    for (let j = disparos.length - 1; j >= 0; j--) {
-      let distancia = dist(enemigos[i].x, enemigos[i].y, disparos[j].x, disparos[j].y);
-      if (distancia < 30) {
-        enemigos.splice(i, 1);
-        disparos.splice(j, 1);
+    // Colisión disparo-enemigo
+    for (let j = enemigos.length - 1; j >= 0; j--) {
+      if (dist(disparos[i].x, disparos[i].y, enemigos[j].x, enemigos[j].y) < 30) {
+        enemigos.splice(j, 1);
+        disparos.splice(i, 1);
+        puntos++;
         break;
       }
     }
   }
+
+  // --- Enemigos (solo aparecen después de llegar al límite) ---
+  if (desplazamientoFondo >= fondoMaximo) {
+    if (enemigos.length < 5 && random(1) < 0.02) {
+      enemigos.push(new Enemigo(width + 50, random(100, height - 100)));
+    }
+
+    for (let i = 0; i < enemigos.length; i++) {
+      enemigos[i].dibujar();
+      enemigos[i].actualizar();
+
+      // Colisión enemigo-jugador
+      if (dist(jugador.x, jugador.y, enemigos[i].x, enemigos[i].y) < 40) {
+        vidas--;
+        enemigos[i].reiniciar();
+      }
+    }
+  }
+
+
+  fill(255);
+  textSize(20);
+  text("Vidas: " + vidas, 20, 30);
+  text("Puntos: " + puntos, 20, 60);
+
+  // Fin del juego
+  if (vidas <= 0) {
+    textSize(40);
+    textAlign(CENTER);
+    text("¡PERDISTE!", width / 2, height / 2);
+    noLoop();
+  } else if (puntos >= 10) {
+    textSize(40);
+    textAlign(CENTER);
+    text("¡GANASTE!", width / 2, height / 2);
+    noLoop();
+  }
 }
-
-// --- Fondo desplazable ---
-function mostrarFondo() {
-  let anchoImg = imagenFondo.width;
-  let x = -(desplazamientoFondo % anchoImg);
-
-  image(imagenFondo, x, 0, anchoImg, height);
-  image(imagenFondo, x + anchoImg, 0, anchoImg, height);
-}
-
-// --- Disparo ---
-function keyPressed() {
+ 
+ function keyPressed() {
   if (key === ' ') {
     jugador.disparar();
   }
