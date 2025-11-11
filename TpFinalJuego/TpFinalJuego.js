@@ -1,3 +1,5 @@
+]//alumanas luz moral y matilda guida
+
 let jugador;
 let disparos = [];
 let enemigos = [];
