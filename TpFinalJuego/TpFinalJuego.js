@@ -10,7 +10,8 @@ let vidas = 3;
 
 let desplazamientoFondo = 0;
 let velocidadFondo = 2;
-let fondoMaximo = 1200; 
+let fondoMaximo = 1200;
+let limiteAlcanzado = false;
 
 function preload() {
   for (let i = 0; i < 8; i++) {
@@ -35,21 +36,26 @@ function draw() {
   image(fondo, x, 0, anchoImg, height);
   image(fondo, x + anchoImg, 0, anchoImg, height);
 
-  // --- Movimiento del jugador y fondo ---
-  if (keyIsDown(LEFT_ARROW)) {
-    if (jugador.x > 50) {
-      jugador.mover(-1);
-    } else if (desplazamientoFondo > 0) {
-      desplazamientoFondo -= velocidadFondo;
-    }
-  }
-  if (keyIsDown(RIGHT_ARROW)) {
+if (keyIsDown(LEFT_ARROW)) {
+  // Antes del límite: Morty se mueve normalmente (no afecta el fondo)
+  jugador.mover(-1);
+}
+
+if (keyIsDown(RIGHT_ARROW)) {
+  // Antes del límite: el fondo se desplaza
+  if (desplazamientoFondo < fondoMaximo) {
     if (jugador.x < width / 2) {
       jugador.mover(1);
-    } else if (desplazamientoFondo < fondoMaximo) {
+    } else {
       desplazamientoFondo += velocidadFondo;
+      jugador.actualizar(); // anima quieto pero el fondo se mueve
     }
+  } 
+  // 🔹 Después del límite: Morty se mueve libremente
+  else {
+    jugador.mover(1);
   }
+}
 
   jugador.actualizar();
   jugador.dibujar();
