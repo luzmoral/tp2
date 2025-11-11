@@ -1,13 +1,13 @@
-
 class Disparo {
-  constructor(x, y) {
+  constructor(x, y, direccion) {
     this.x = x;
     this.y = y;
-    this.velocidad = 8;
+    this.direccion = direccion; // 1 = derecha, -1 = izquierda
+    this.velocidad = 10;
   }
 
   actualizar() {
-    this.y -= this.velocidad;
+    this.x += this.velocidad * this.direccion;
   }
 
   mostrar() {
