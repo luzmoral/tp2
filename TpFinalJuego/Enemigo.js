@@ -1,14 +1,16 @@
 class Enemigo {
   constructor(x, y) {
     this.x = x;
-    this.y = y;
+    this.y = height - this.t / 2 - 50; // ajustá el -50 según el suelo de tu fondo
     this.vel = random(2, 4);
-    this.t = 50;
+    this.t = 150; // tamaño del alien
   }
 
   dibujar() {
-    fill(255, 0, 0);
-    ellipse(this.x, this.y, this.t);
+    push();
+    imageMode(CENTER);
+    image(imgAlien, this.x, this.y, this.t, this.t,);
+    pop();
   }
 
   actualizar() {
@@ -18,6 +20,7 @@ class Enemigo {
 
   reiniciar() {
     this.x = width + random(100, 300);
-    this.y = random(100, height - 100);
+    this.y = height - this.t / 2 - 50;
+
   }
 }

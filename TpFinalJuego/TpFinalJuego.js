@@ -1,8 +1,8 @@
-
 let jugador;
 let disparos = [];
 let enemigos = [];
 let imagenesMorty = [];
+let imgAlien =[];
 let fondo;
 
 let puntos = 0;
@@ -18,6 +18,7 @@ function preload() {
     imagenesMorty.push(loadImage("assets/morty/m" + (i + 1) + ".png"));
   }
   fondo = loadImage("assets/fondoJuego.jpg");
+    imgAlien = loadImage("assets/alien.png");
 }
 
 
@@ -29,12 +30,15 @@ function setup() {
 
 function draw() {
   background(0);
+  push();
 
   // --- Fondo desplazable ---
   let anchoImg = fondo.width;
   let x = -(desplazamientoFondo % anchoImg);
   image(fondo, x, 0, anchoImg, height);
   image(fondo, x + anchoImg, 0, anchoImg, height);
+
+pop();
 
 if (keyIsDown(LEFT_ARROW)) {
   // Antes del límite: Morty se mueve normalmente (no afecta el fondo)
@@ -51,7 +55,7 @@ if (keyIsDown(RIGHT_ARROW)) {
       jugador.actualizar(); // anima quieto pero el fondo se mueve
     }
   } 
-  // 🔹 Después del límite: Morty se mueve libremente
+  // Después del límite: Morty se mueve libremente
   else {
     jugador.mover(1);
   }
