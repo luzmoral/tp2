@@ -3,7 +3,9 @@ let imagenesMorty = [];
 let imgCorazonLleno, imgCorazonVacio;
 let fondo, imgAlien;
 let portada, fondoCreditos;
-
+let fuente;
+let musicaFondo;
+let musicaActiva = false;
 function preload() {
   
   for (let i = 0; i < 8; i++) {
@@ -15,8 +17,10 @@ function preload() {
   imgCorazonLleno = loadImage("assets/corazon_lleno.png");
   imgCorazonVacio = loadImage("assets/corazon_vacio.png");
   portada = loadImage("assets/portada.jpeg");        
-  fondoCreditos = loadImage("assets/20.jpg");        
-
+  fondoCreditos = loadImage("assets/20.jpg");     
+  fuente = loadFont("assets/rickymorty.ttf");
+  musicaFondo = loadSound("assets/musica.mp3");
+  
   juego = new Juego(
     imagenesMorty,
     fondo,
@@ -31,11 +35,13 @@ function preload() {
 function setup() {
   createCanvas(640, 480);
   juego.iniciar();
+  
 }
 
 function draw() {
   juego.actualizar();
   juego.dibujar();
+
 }
 
 function keyPressed() {
@@ -45,5 +51,10 @@ function keyPressed() {
 }
 
 function mousePressed() {
+  
+  if (!musicaActiva && musicaFondo && !musicaFondo.isPlaying()) {
+    musicaFondo.loop();
+    musicaActiva = true;
+}
   juego.manejarClick(mouseX, mouseY);
 }

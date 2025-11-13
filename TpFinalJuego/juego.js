@@ -1,3 +1,4 @@
+
 class Juego {
   constructor(imagenesMorty, fondo, imgAlien, imgCorazonLleno, imgCorazonVacio, portada, fondoCreditos) {
     this.imagenesMorty = imagenesMorty;
@@ -18,8 +19,7 @@ class Juego {
     this.velocidadFondo = 2;
     this.fondoMaximo = 1200;
 
-    this.estado = "inicio"; //  "inicio", "jugando", "creditos"
-
+    this.estado = "inicio"; //  "inicio", "jugando", "creditos","ganaste","perdiste"
     // botones
     this.botonJugar = { x: 240, y: 300, w: 160, h: 50 };
     this.botonCreditos = { x: 240, y: 370, w: 160, h: 50 };
@@ -39,10 +39,10 @@ class Juego {
   }
 
   actualizar() {
-    if (this.estado !== "jugando") return;
-
+    if (this.estado !== "jugando")return;
+    
     if (keyIsDown(LEFT_ARROW)) this.jugador.mover(-1);
-
+  
     if (keyIsDown(RIGHT_ARROW)) {
       if (this.desplazamientoFondo < this.fondoMaximo) {
         if (this.jugador.x < width / 2) this.jugador.mover(1);
@@ -58,14 +58,17 @@ class Juego {
     this.jugador.actualizar();
 
     // disparos y colisiones
-    for (let d of this.disparos) {
-      if (!d.eliminado) {
-        d.actualizar();
-        for (let e of this.enemigos) {
-          if (!e.eliminado && dist(d.x, d.y, e.x, e.y) < 30) {
-            e.eliminado = true;
-            d.eliminado = true;
-            this.puntos++;
+   for (let i = 0; i < this.disparos.length; i++) {
+  let d = this.disparos[i];
+  if (!d.eliminado) {
+    d.actualizar();
+
+    for (let j = 0; j < this.enemigos.length; j++) {
+      let e = this.enemigos[j];
+      if (!e.eliminado && dist(d.x, d.y, e.x, e.y) < 30) {
+        e.eliminado = true;
+        d.eliminado = true;
+        this.puntos++;
           }
         }
       }
@@ -75,53 +78,107 @@ class Juego {
 
     // enemigos
     if (this.desplazamientoFondo >= this.fondoMaximo) {
-      if (this.enemigos.length < 5 && random(1) < 0.02) {
-        this.enemigos.push(new Enemigo(width + 50, random(100, height - 100)));
-      }
+     if (random(1) < 0.03) {
+    this.enemigos.push(new Enemigo(width + random(50, 200), random(100, height - 100)));
+  }
 
-      for (let e of this.enemigos) {
-        if (!e.eliminado) {
-          e.actualizar();
-          if (dist(this.jugador.x, this.jugador.y, e.x, e.y) < 40) {
-            this.quitarVida();
-            e.reiniciar();
-          }
+  // Actualizar enemigos existentes con índice
+  for (let i = 0; i < this.enemigos.length; i++) {
+    let enemigo = this.enemigos[i];
+
+    if (!enemigo.eliminado) {
+      enemigo.actualizar();
+
+      // Colisión con jugador
+      if (dist(this.jugador.x, this.jugador.y, enemigo.x, enemigo.y) < 40) {
+        this.quitarVida();
+        enemigo.reiniciar();
+      }
         }
       }
     }
 
-    // revisar fin del juego
+ /*   // revisar fin del juego
     const vidasRestantes = this.vidasJugador.filter(v => v.activa).length;
     if (vidasRestantes === 0) this.estado = "creditos";
     if (this.puntos >= 10) this.estado = "creditos";
   }
-
-  dibujar() {
-    if (this.estado === "inicio") this.mostrarInicio();
-    else if (this.estado === "jugando") this.mostrarJuego();
-    else if (this.estado === "creditos") this.mostrarCreditos();
+*/
+let vidasRestantes = 0;
+for (let i = 0; i < this.vidasJugador.length; i++) {
+  if (this.vidasJugador[i].activa) {
+    vidasRestantes++;
   }
+}
 
+if (vidasRestantes === 0) {
+  this.estado = "perdiste";
+}
+
+if (this.puntos >= 10) {
+  this.estado = "ganaste";
+ }
+}
+  dibujar() {
+ if (this.estado === "inicio") this.mostrarInicio();
+ else if (this.estado === "jugando") this.mostrarJuego();
+  else if (this.estado === "ganaste") this.mostrarGanaste();
+  else if (this.estado === "perdiste") this.mostrarPerdiste();
+else if (this.estado === "creditos") this.mostrarCreditos();
+ }
+    mostrarGanaste() {
+ 
+  fill(255);
+  textAlign(CENTER);
+  textSize(60);
+ 
+  text("¡GANASTE!", width / 2, height / 2 - 40);
+  textSize(24);
+  text("Mataste a todos los enemigos", width / 2, height / 2 + 10);
+  text("Creditos", width / 2, height / 2 + 60);
+}
+
+mostrarPerdiste() {
+
+  fill(255);
+  textAlign(CENTER);
+  textSize(60);
+  
+  text("PERDISTE", width / 2, height / 2 - 40);
+  textSize(24);
+  text("Te quedaste sin vidas", width / 2, height / 2 + 10);
+  text("Creditos", width / 2, height / 2 + 60);
+}
+      
   mostrarInicio() {
+    push()
     image(this.portada, 0, 0, width, height);
     textAlign(CENTER);
-    fill(255);
+    stroke(0,200,0);
+    strokeWeight(7);
+    fill(58, 124, 148);
     textSize(36);
-    text("Morty Escape", width / 2, 120);
-
-    // Botón Jugar
-    fill(0, 150, 0);
+    textFont(fuente,90);
+    text("Morty Escape", width / 2,240);
+    pop()
+    
+    push()// Botón Jugar
+    fill(0, 200, 0);
     rect(this.botonJugar.x, this.botonJugar.y, this.botonJugar.w, this.botonJugar.h, 10);
     fill(255);
     textSize(20);
-    text("Jugar", this.botonJugar.x + 80, this.botonJugar.y + 33);
-
+    text("Jugar", this.botonJugar.x + 60, this.botonJugar.y + 33);
+    pop()
+    
+    push()
     // Botón Créditos
-    fill(0, 0, 150);
+    fill(58, 124, 148);
     rect(this.botonCreditos.x, this.botonCreditos.y, this.botonCreditos.w, this.botonCreditos.h, 10);
     fill(255);
-    text("Créditos", this.botonCreditos.x + 80, this.botonCreditos.y + 33);
-  }
+    textSize(20);
+    text("Créditos", this.botonCreditos.x + 45, this.botonCreditos.y + 33);
+    pop()
+}
 
   mostrarJuego() {
     background(0);
@@ -132,9 +189,24 @@ class Juego {
 
     this.jugador.dibujar();
 
-    for (let d of this.disparos) if (!d.eliminado) d.dibujar();
-    for (let e of this.enemigos) if (!e.eliminado) e.dibujar();
-    for (let v of this.vidasJugador) v.dibujar();
+for (let i = 0; i < this.disparos.length; i++) {
+  let d = this.disparos[i];
+  if (!d.eliminado) {
+    d.dibujar();
+  }
+}
+
+for (let i = 0; i < this.enemigos.length; i++) {
+  let e = this.enemigos[i];
+  if (!e.eliminado) {
+    e.dibujar();
+  }
+}
+
+for (let i = 0; i < this.vidasJugador.length; i++) {
+  let v = this.vidasJugador[i];
+  v.dibujar();
+}
 
     fill(255);
     textSize(20);
@@ -178,7 +250,9 @@ class Juego {
       }
     } else if (this.estado === "creditos") {
       this.estado = "inicio";
-    }
+    }else if (this.estado === "ganaste" || this.estado === "perdiste") {
+  this.estado = "creditos";
+}
   }
 
   quitarVida() {
