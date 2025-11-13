@@ -1,13 +1,15 @@
+
 class Jugador {
-  constructor() {
+  constructor(imagenes, juego) {
     this.x = 100;
     this.y = 370;
     this.t = 140;
     this.v = 10;
-    this.imagenes = imagenesMorty;
+    this.imagenes = imagenes;
     this.frame = 0;
     this.contador = 0;
-    this.direccion = 1; // 1 = derecha, -1 = izquierda
+    this.direccion = 1;
+    this.juego = juego;
   }
 
   dibujar() {
@@ -18,19 +20,13 @@ class Jugador {
   }
 
   actualizar() {
-    // Solo animar si se está moviendo
     if (keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)) {
       this.contador++;
       if (this.contador % 6 === 0) {
-        if (this.direccion === 1) {
-          // 🔹 Frames 0–3: derecha
-          this.frame = (this.frame + 1) % 4;
-        } else {
-          // 🔹 Frames 4–7: izquierda
-          this.frame = 4 + ((this.frame - 4 + 1) % 4);
-        }
+        if (this.direccion === 1) this.frame = (this.frame + 1) % 4;
+        else this.frame = 4 + ((this.frame - 4 + 1) % 4);
       }
-   }
+    }
   }
 
   mover(direccion) {
@@ -39,7 +35,12 @@ class Jugador {
     this.direccion = direccion;
   }
 
+ 
   disparar() {
-    disparos.push(new Disparo(this.x + this.t / 2 * this.direccion, this.y - 20, this.direccion));
-  }
+  juego.disparos.push(new Disparo(
+    this.x + (this.t / 2) * this.direccion,
+    this.y - 20,
+    this.direccion
+  ));
+}
 }

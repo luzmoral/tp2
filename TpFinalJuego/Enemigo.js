@@ -1,3 +1,4 @@
+
 class Enemigo {
   constructor(x, y) {
     this.x = x;
