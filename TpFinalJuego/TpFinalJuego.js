@@ -1,3 +1,4 @@
+//variables
 let juego;
 let imagenesMorty = [];
 let imgCorazonLleno, imgCorazonVacio;
@@ -21,7 +22,7 @@ function preload() {
   fondoCreditos = loadImage("assets/20.jpg");
   fuente = loadFont("assets/rickymorty.ttf");
   musicaFondo = loadSound("assets/musica.mp3");
-
+//crea objeto Juego
   juego = new Juego(
     imagenesMorty,
     fondo,
@@ -39,6 +40,7 @@ function setup() {
 }
 
 function draw() {
+  //llama a los metodos
   juego.actualizar();
   juego.dibujar();
 }

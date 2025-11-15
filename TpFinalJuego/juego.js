@@ -1,5 +1,6 @@
 class Juego {
   constructor(imagenesMorty, fondo, imgAlien, imgCorazonLleno, imgCorazonVacio, portada, fondoCreditos) {
+    //propiedades de la clase
     this.imagenesMorty = imagenesMorty;
     this.fondo = fondo;
     this.imgAlien = imgAlien;
@@ -19,10 +20,13 @@ class Juego {
     this.fondoMaximo = 1200;
 
     this.estado = "inicio"; //  "inicio", "jugando", "creditos","ganaste","perdiste"
+    
     // botones
     this.botonJugar = { x: 240, y: 300, w: 160, h: 50 };
     this.botonCreditos = { x: 240, y: 370, w: 160, h: 50 };
     this.tiempoTutorial = 0;
+    
+    //advertencia
     this.mostrarAdvertencia = false;
     this.tiempoAdvertencia = 0;   // 
     this.duracionAdvertencia =2000 ;
@@ -48,7 +52,7 @@ class Juego {
 
   actualizar() {
     if (this.estado !== "jugando") return;
-
+//mover
     if (keyIsDown(LEFT_ARROW)) this.jugador.mover(-1);
 
     if (keyIsDown(RIGHT_ARROW)) {
@@ -84,26 +88,26 @@ class Juego {
 
     this.disparos = this.disparos.filter(d => !d.eliminado);
 
-    // enemigos (activar aparición y advertencia cuando se llega al final)
+    // crear enemigos (activar aparición y advertencia cuando se llega al final)
     if (this.desplazamientoFondo >= this.fondoMaximo) {
       if (this.desplazamientoFondo >= this.fondoMaximo && !this.advertenciaMostrada) {
-  this.mostrarAdvertencia = true;
-  this.tiempoAdvertencia = millis();
-  this.advertenciaMostrada = true;
+          this.mostrarAdvertencia = true;
+          this.tiempoAdvertencia = millis();
+          this.advertenciaMostrada = true;
 }
       if (random(1) < 0.03) {
         this.enemigos.push(new Enemigo(width + random(50, 200), random(100, height - 100)));
       }
     }
 
-    // Actualizar enemigos existentes con índice (queda dentro de actualizar)
+    // actualizar enemigos
     for (let i = 0; i < this.enemigos.length; i++) {
       let enemigo = this.enemigos[i];
 
       if (!enemigo.eliminado) {
         enemigo.actualizar();
 
-        // Colisión con jugador
+        // colisión con jugador
         if (dist(this.jugador.x, this.jugador.y, enemigo.x, enemigo.y) < 40) {
           this.quitarVida();
           enemigo.reiniciar();
@@ -111,7 +115,7 @@ class Juego {
       }
     }
 
-    // comprobar vidas
+    // comprueba vidas, para mostrar corazones
     let vidasRestantes = 0;
     for (let i = 0; i < this.vidasJugador.length; i++) {
       if (this.vidasJugador[i].activa) {
@@ -126,7 +130,7 @@ class Juego {
     if (this.puntos >= 11) {
       this.estado = "ganaste";
     }
-  } // <-- cierre correcto del método actualizar()
+  } 
 
   dibujar() {
     if (this.estado === "inicio") this.mostrarInicio();
@@ -135,7 +139,7 @@ class Juego {
     else if (this.estado === "perdiste") this.mostrarPerdiste();
     else if (this.estado === "creditos") this.mostrarCreditos();
   }
-
+//estados
   mostrarGanaste() {
     fill(255);
     textAlign(CENTER);
@@ -196,7 +200,7 @@ class Juego {
     image(this.fondo, x, 0, anchoImg, height);
     image(this.fondo, x + anchoImg, 0, anchoImg, height);
 
-    // ---------- ADVERTENCIA -------------
+    
     if (this.mostrarAdvertencia) {
       let tiempoPasado = millis() - this.tiempoAdvertencia;
 
@@ -204,25 +208,36 @@ class Juego {
       this.brillo = map(sin(frameCount * this.brilloV), -1, 1, 50, 255);
       this.advertenciaPantalla(this.brillo);
 
-      // apagar después de X segundos
+      // apagar después de 2 segundos
       if (tiempoPasado > this.duracionAdvertencia) {
         this.mostrarAdvertencia = false;
       }
     }
-    // ---------- FIN ADVERTENCIA ----------
+    
 
-    // TUTORIAL (5 segundos)
+    
     if (millis() - this.tiempoTutorial < 5000) {
       this.tutorial();
     }
 
-    // DIBUJAR PERSONAJE / DISPAROS / ENEMIGOS / VIDAS
+    
+    //personaje,disparos,los enemigos y las vidas
     this.jugador.dibujar();
 
-    for (let d of this.disparos) if (!d.eliminado) d.dibujar();
-    for (let e of this.enemigos) if (!e.eliminado) e.dibujar();
-    for (let v of this.vidasJugador) v.dibujar();
+  for (let i = 0; i < this.disparos.length; i++) { 
+  let d = this.disparos[i]; if (!d.eliminado) { d.dibujar(); 
+  } 
+} 
+   for (let i = 0; i < this.enemigos.length; i++) { 
+let e = this.enemigos[i]; 
+   
+   if (!e.eliminado) { e.dibujar(); 
+  } 
+} 
 
+ for (let i = 0; i < this.vidasJugador.length; i++) { 
+
+let v = this.vidasJugador[i]; v.dibujar(); }
     fill(255);
     textSize(20);
     text("Puntos: " + this.puntos, 60, 70);
