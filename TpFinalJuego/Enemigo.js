@@ -1,10 +1,13 @@
 
+
+
 class Enemigo {
   constructor(x, y) {
+    this.t = 150; // tamaño del alien
     this.x = x;
     this.y = height - this.t / 2 - 50; 
     this.vel = random(2, 4);
-    this.t = 150; // tamaño del alien
+    
   }
 
   dibujar() {

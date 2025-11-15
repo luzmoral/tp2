@@ -38,7 +38,7 @@ class Jugador {
 
  
   disparar() {
-  juego.disparos.push(new Disparo(
+  this.juego.disparos.push(new Disparo(
     this.x + (this.t / 2) * this.direccion,
     this.y - 20,
     this.direccion
