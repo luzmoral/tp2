@@ -2,7 +2,7 @@
 class Enemigo {
   constructor(x, y) {
     this.x = x;
-    this.y = height - this.t / 2 - 50; // ajustá el -50 según el suelo de tu fondo
+    this.y = height - this.t / 2 - 50; 
     this.vel = random(2, 4);
     this.t = 150; // tamaño del alien
   }
@@ -13,11 +13,13 @@ class Enemigo {
     image(imgAlien, this.x, this.y, this.t, this.t,);
     pop();
   }
-
+ 
+ // reaparece en la izquierda
   actualizar() {
     this.x -= this.vel;
     if (this.x < -50) this.reiniciar();
   }
+
 
   reiniciar() {
     this.x = width + random(100, 300);

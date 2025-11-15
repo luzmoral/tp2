@@ -34,13 +34,14 @@ function preload() {
 
 function setup() {
   createCanvas(640, 480);
-  juego.iniciar();
+  juego.iniciar(); //vidad,jugador,puntos,enemigos
   
 }
 
 function draw() {
-  juego.actualizar();
-  juego.dibujar();
+  juego.actualizar();//movimiento,colisiones, puntos
+  juego.dibujar();// los estados juego
+  
 
 }
 

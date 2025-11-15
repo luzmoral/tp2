@@ -111,11 +111,11 @@ for (let i = 0; i < this.vidasJugador.length; i++) {
   }
 }
 
-if (vidasRestantes === 0) {
+if (vidasRestantes ===0) {
   this.estado = "perdiste";
 }
 
-if (this.puntos >= 10) {
+if (this.puntos >=11) {
   this.estado = "ganaste";
  }
 }
@@ -210,7 +210,7 @@ for (let i = 0; i < this.vidasJugador.length; i++) {
 
     fill(255);
     textSize(20);
-    text("Puntos: " + this.puntos, 30, 70);
+    text("Puntos: " + this.puntos, 60, 70);
   }
 
   mostrarCreditos() {
@@ -218,10 +218,15 @@ for (let i = 0; i < this.vidasJugador.length; i++) {
     fill(255);
     textAlign(CENTER);
     textSize(32);
-    text("Créditos", width / 2, height / 2 - 60);
+    text("Créditos", width / 2, height / 2 - 120);
     textSize(20);
-    text("Hecho por Luz Moral y Matilda Guida", width / 2, height / 2 - 10);
-    text("Basado en Rick and Morty", width / 2, height / 2 + 20);
+    text("Hecho por Luz Moral y Matilda Guida", width / 2, height / 2 - 70);
+    text("Basado en Rick and Morty", width / 2, height / 2 - 45);
+    textAlign(CENTER);
+    textSize(30);
+    text("Guia de como se juega",width / 2, height / 2 +50);
+    textSize(20);
+    text("con la barra espaciadora disparas a los enemigos,\n con boton de flecha izquierda para atras  y derecha adelante te moves ", width / 2, height / 2 + 90);
     textSize(16);
     text("Click para volver al inicio", width / 2, height - 40);
   }

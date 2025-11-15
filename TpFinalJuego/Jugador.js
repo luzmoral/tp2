@@ -1,6 +1,6 @@
 
 class Jugador {
-  constructor(imagenes, juego) {
+  constructor(imagenes, juego) { //posicion,tamaño,velocidad,frame alctual,direccion
     this.x = 100;
     this.y = 370;
     this.t = 140;
@@ -22,6 +22,7 @@ class Jugador {
   actualizar() {
     if (keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)) {
       this.contador++;
+      
       if (this.contador % 6 === 0) {
         if (this.direccion === 1) this.frame = (this.frame + 1) % 4;
         else this.frame = 4 + ((this.frame - 4 + 1) % 4);
