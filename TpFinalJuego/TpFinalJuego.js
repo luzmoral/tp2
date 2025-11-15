@@ -1,3 +1,4 @@
+//https://www.youtube.com/watch?v=7DNH_2E7vgg
 //variables
 let juego;
 let imagenesMorty = [];

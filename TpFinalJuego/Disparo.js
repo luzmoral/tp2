@@ -1,7 +1,7 @@
 
 class Disparo {
   constructor(x, y, direccion) {
-    //atributos del modelo
+    //atributos de la clase
     this.x = x;
     this.y = y;
     this.direccion = direccion;

@@ -44,7 +44,7 @@ class Juego {
     this.puntos = 0;
     this.desplazamientoFondo = 0;
     this.tiempoTutorial = millis();
-    this.tiempoAdvertencia = millis(); // CORREGIDO: usar el nombre que usás en mostrarJuego()
+    this.tiempoAdvertencia = millis(); 
     for (let i = 0; i < 3; i++) {
       this.vidasJugador.push(new Vida(20 + i * 50, 20));
     }
