@@ -24,7 +24,7 @@ class Juego {
     this.botonCreditos = { x: 240, y: 370, w: 160, h: 50 };
     this.tiempoTutorial = 0;
     this.mostrarAdvertencia = false;
-    this.tiempoAdvertencia = 0;   // ← NOMBRE CORRECTO
+    this.tiempoAdvertencia = 0;   // 
     this.duracionAdvertencia =2000 ;
     this.advertenciaMostrada = false;
 
